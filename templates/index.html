@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur Vidéo → GIF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Convertisseur Vidéo → GIF</h1>
+        
+        <div class="upload-section">
+            <div class="drop-zone" id="dropZone">
+                <p>📁 Glissez-déposez votre vidéo ici</p>
+                <p>ou</p>
+                <button class="btn btn-primary" id="uploadBtn">Choisir un fichier</button>
+                <input type="file" id="fileInput" accept=".mp4,.mov,.avi,.mkv,.webm" hidden>
+                <p class="file-info">Formats supportés: MP4, MOV, AVI, MKV, WEBM</p>
+            </div>
+        </div>
+
+        <div id="videoInfo" class="video-info" style="display:none;">
+            <h3>Informations vidéo</h3>
+            <div class="info-grid">
+                <div><strong>Durée:</strong> <span id="duration">0</span>s</div>
+                <div><strong>Résolution:</strong> <span id="resolution">0x0</span></div>
+                <div><strong>FPS:</strong> <span id="fps">0</span></div>
+            </div>
+        </div>
+
+        <div id="controls" class="controls" style="display:none;">
+            <h3>Paramètres de conversion</h3>
+            
+            <div class="control-group">
+                <label for="startTime">Temps de début: <span id="startTimeLabel">0</span>s</label>
+                <input type="range" id="startTime" min="0" max="10" value="0" step="0.5">
+            </div>
+
+            <div class="control-group">
+                <label for="durationRange">Durée: <span id="durationLabel">10</span>s</label>
+                <input type="range" id="durationRange" min="1" max="10" value="10" step="0.5">
+            </div>
+
+            <div class="control-group">
+                <label for="fpsRange">Framerate: <span id="fpsLabel">15</span> fps</label>
+                <input type="range" id="fpsRange" min="5" max="30" value="15" step="1">
+            </div>
+
+            <div class="control-group">
+                <label for="widthRange">Largeur max: <span id="widthLabel">480</span>px</label>
+                <input type="range" id="widthRange" min="200" max="800" value="480" step="10">
+            </div>
+
+            <button class="btn btn-success" id="convertBtn">🔄 Convertir en GIF</button>
+        </div>
+
+        <div id="progressSection" class="progress-section" style="display:none;">
+            <h3>Progression</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">0%</p>
+        </div>
+
+        <div id="resultSection" class="result-section" style="display:none;">
+            <h3>Aperçu du GIF</h3>
+            <div class="gif-preview">
+                <img id="gifPreview" src="" alt="GIF aperçu">
+            </div>
+            <button class="btn btn-primary" id="downloadBtn">⬇️ Télécharger le GIF</button>
+        </div>
+
+        <div id="errorSection" class="error-section" style="display:none;">
+            <p class="error-text" id="errorText"></p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
