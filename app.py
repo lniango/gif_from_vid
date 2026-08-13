@@ -64,22 +64,41 @@ def convert_video_to_gif(task_id, input_path, output_path, params):
         width = params.get('width', 480)
         fps = params.get('fps', 15)
         
-        # Construction de la commande FFmpeg
-        cmd = [
+        # Fichier temporaire pour la palette
+        palette_path = output_path.replace('.gif', '_palette.png')
+        
+        # Étape 1: Générer la palette
+        palette_cmd = [
             'ffmpeg',
-            '-i', input_path,
             '-ss', str(start_time),
             '-t', str(duration),
-            '-vf', f'fps={fps},scale={width}:-1:flags=lanczos',
+            '-i', input_path,
+            '-vf', f'fps={fps},scale={width}:-1:flags=lanczos,palettegen=stats_mode=diff',
+            '-y',
+            palette_path
+        ]
+        
+        tasks[task_id]['progress'] = 10
+        subprocess.run(palette_cmd, capture_output=True, check=True)
+        
+        # Étape 2: Générer le GIF avec la palette
+        gif_cmd = [
+            'ffmpeg',
+            '-ss', str(start_time),
+            '-t', str(duration),
+            '-i', input_path,
+            '-i', palette_path,
+            '-lavfi', f'fps={fps},scale={width}:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=3',
             '-c:v', 'gif',
             '-f', 'gif',
-            '-y',  # Écraser le fichier existant
+            '-loop', '0',  # Boucle infinie
+            '-y',
             output_path
         ]
         
         # Exécuter FFmpeg et capturer la sortie
         process = subprocess.Popen(
-            cmd,
+            gif_cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True
